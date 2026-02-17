@@ -1,42 +1,30 @@
-// ==================== Переменные ====================
-const startBtn = document.getElementById('startBtn');
-const calc = document.getElementById('calc');
+// ==================== Вкладки ====================
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const target = btn.dataset.tab;
+    tabContents.forEach(c => c.id === target ? c.classList.remove('hidden') : c.classList.add('hidden'));
+  });
+});
+
+// ==================== Доход и расходы ====================
 const calcBtn = document.getElementById('calcBtn');
 const result = document.getElementById('result');
 
-const lifeCalc = document.getElementById('lifeCalc');
-const lifeBtn = document.getElementById('lifeBtn');
-const lifeResult = document.getElementById('lifeResult');
-
-const detectorCalc = document.getElementById('detectorCalc');
-const detectorBtn = document.getElementById('detectorBtn');
-const detectorResult = document.getElementById('detectorResult');
-
-// ==================== Событие кнопки "Начать расчёт" ====================
-startBtn.addEventListener('click', () => {
-  calc.classList.remove('hidden');
-  calc.scrollIntoView({ behavior: 'smooth' });
-});
-
-// ==================== Калькулятор расходов ====================
 calcBtn.addEventListener('click', () => {
-  const income = +document.getElementById('income').value || 0;
-  const rent = +document.getElementById('rent').value || 0;
-  const food = +document.getElementById('food').value || 0;
-  const transport = +document.getElementById('transport').value || 0;
-  const other = +document.getElementById('other').value || 0;
+  const income = +document.getElementById('incomeLevel').value;
+  const rent = +document.getElementById('rentLevel').value;
+  const food = +document.getElementById('foodLevel').value;
 
-  const expenses = rent + food + transport + other;
+  const expenses = rent + food;
   const left = income - expenses;
-
-  if (income === 0) {
-    result.classList.remove('hidden');
-    result.innerHTML = 'Введите доход';
-    return;
-  }
-
-  const days = left > 0 ? Math.floor(left / (expenses / 30)) : 0;
   const percent = Math.round((expenses / income) * 100);
+  const days = left > 0 ? Math.floor(left / (expenses / 30)) : 0;
 
   result.classList.remove('hidden');
   result.innerHTML = `
@@ -44,59 +32,58 @@ calcBtn.addEventListener('click', () => {
     <p>Уходит: <b>${percent}% дохода</b></p>
     <p>Денег хватит примерно на <b>${days} дней</b></p>
   `;
-
-  // Показываем следующий инструмент
-  lifeCalc.classList.remove('hidden');
-  lifeCalc.scrollIntoView({ behavior: 'smooth' });
 });
 
 // ==================== Цена часа жизни ====================
+const lifeBtn = document.getElementById('lifeBtn');
+const lifeResult = document.getElementById('lifeResult');
+
 lifeBtn.addEventListener('click', () => {
-  const income = +document.getElementById('income').value || 0;
-  const work = +document.getElementById('workHours').value || 0;
-  const road = +document.getElementById('roadHours').value || 0;
-  const extra = +document.getElementById('extraHours').value || 0;
+  const income = +document.getElementById('incomeLevel').value;
+  const daysPerWeek = +document.getElementById('workDays').value;
+  const hoursPerDay = +document.getElementById('workHoursPerDay').value;
+  const commute = +document.getElementById('commute').value;
+  const overtime = +document.getElementById('overtime').value;
 
-  if (income === 0 || work === 0) {
-    lifeResult.classList.remove('hidden');
-    lifeResult.innerHTML = 'Заполни доход и часы работы';
-    return;
-  }
+  const workHours = daysPerWeek * hoursPerDay * 4; // месяц
+  const roadHours = commute * daysPerWeek * 4; // дорога
+  const extraHours = overtime * 4; // переработки
 
-  const nominal = Math.round(income / work);
-  const realHours = work + road + extra;
-  const real = Math.round(income / realHours);
+  const nominal = Math.round(income / workHours);
+  const real = Math.round(income / (workHours + roadHours + extraHours));
 
   lifeResult.classList.remove('hidden');
   lifeResult.innerHTML = `
     <p>Номинальная цена часа: <b>${nominal} ₽</b></p>
     <p>Реальная цена часа жизни: <b>${real} ₽</b></p>
   `;
-
-  // Показываем следующий инструмент
-  detectorCalc.classList.remove('hidden');
-  detectorCalc.scrollIntoView({ behavior: 'smooth' });
 });
 
 // ==================== Финансовый детектор ====================
+const detectorBtn = document.getElementById('detectorBtn');
+const detectorResult = document.getElementById('detectorResult');
+
 detectorBtn.addEventListener('click', () => {
-  const income = +document.getElementById('income').value || 0;
-  const rent = +document.getElementById('rent').value || 0;
-  const food = +document.getElementById('food').value || 0;
-  const transport = +document.getElementById('transport').value || 0;
-  const other = +document.getElementById('other').value || 0;
+  const income = +document.getElementById('incomeLevel').value;
+  const rent = +document.getElementById('rentLevel').value;
+  const food = +document.getElementById('foodLevel').value;
 
-  const work = +document.getElementById('workHours').value || 0;
-  const road = +document.getElementById('roadHours').value || 0;
-  const extra = +document.getElementById('extraHours').value || 0;
+  const daysPerWeek = +document.getElementById('workDays').value;
+  const hoursPerDay = +document.getElementById('workHoursPerDay').value;
+  const commute = +document.getElementById('commute').value;
+  const overtime = +document.getElementById('overtime').value;
 
-  const expenses = rent + food + transport + other;
+  const expenses = rent + food;
   const left = income - expenses;
 
-  const totalHours = work + road + extra;
+  const workHours = daysPerWeek * hoursPerDay * 4;
+  const roadHours = commute * daysPerWeek * 4;
+  const extraHours = overtime * 4;
+
+  const totalHours = workHours + roadHours + extraHours;
   const realHour = totalHours > 0 ? income / totalHours : 0;
   const wastedMoney = expenses > income ? expenses - income : 0;
-  const wastedHours = totalHours - work;
+  const wastedHours = totalHours - workHours;
 
   detectorResult.classList.remove('hidden');
   detectorResult.innerHTML = `
@@ -105,4 +92,5 @@ detectorBtn.addEventListener('click', () => {
     <p>Реальная цена часа жизни: <b>${Math.round(realHour)} ₽</b></p>
   `;
 });
+
 
