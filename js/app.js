@@ -1,13 +1,24 @@
+// ==================== Переменные ====================
 const startBtn = document.getElementById('startBtn');
 const calc = document.getElementById('calc');
 const calcBtn = document.getElementById('calcBtn');
 const result = document.getElementById('result');
 
+const lifeCalc = document.getElementById('lifeCalc');
+const lifeBtn = document.getElementById('lifeBtn');
+const lifeResult = document.getElementById('lifeResult');
+
+const detectorCalc = document.getElementById('detectorCalc');
+const detectorBtn = document.getElementById('detectorBtn');
+const detectorResult = document.getElementById('detectorResult');
+
+// ==================== Событие кнопки "Начать расчёт" ====================
 startBtn.addEventListener('click', () => {
   calc.classList.remove('hidden');
   calc.scrollIntoView({ behavior: 'smooth' });
 });
 
+// ==================== Калькулятор расходов ====================
 calcBtn.addEventListener('click', () => {
   const income = +document.getElementById('income').value || 0;
   const rent = +document.getElementById('rent').value || 0;
@@ -32,14 +43,14 @@ calcBtn.addEventListener('click', () => {
     <p>Остаётся: <b>${left.toLocaleString()} ₽</b></p>
     <p>Уходит: <b>${percent}% дохода</b></p>
     <p>Денег хватит примерно на <b>${days} дней</b></p>
-  const lifeCalc = document.getElementById('lifeCalc');
-const lifeBtn = document.getElementById('lifeBtn');
-const lifeResult = document.getElementById('lifeResult');
+  `;
 
-calcBtn.addEventListener('click', () => {
+  // Показываем следующий инструмент
   lifeCalc.classList.remove('hidden');
+  lifeCalc.scrollIntoView({ behavior: 'smooth' });
 });
 
+// ==================== Цена часа жизни ====================
 lifeBtn.addEventListener('click', () => {
   const income = +document.getElementById('income').value || 0;
   const work = +document.getElementById('workHours').value || 0;
@@ -61,7 +72,37 @@ lifeBtn.addEventListener('click', () => {
     <p>Номинальная цена часа: <b>${nominal} ₽</b></p>
     <p>Реальная цена часа жизни: <b>${real} ₽</b></p>
   `;
+
+  // Показываем следующий инструмент
+  detectorCalc.classList.remove('hidden');
+  detectorCalc.scrollIntoView({ behavior: 'smooth' });
 });
 
+// ==================== Финансовый детектор ====================
+detectorBtn.addEventListener('click', () => {
+  const income = +document.getElementById('income').value || 0;
+  const rent = +document.getElementById('rent').value || 0;
+  const food = +document.getElementById('food').value || 0;
+  const transport = +document.getElementById('transport').value || 0;
+  const other = +document.getElementById('other').value || 0;
 
+  const work = +document.getElementById('workHours').value || 0;
+  const road = +document.getElementById('roadHours').value || 0;
+  const extra = +document.getElementById('extraHours').value || 0;
+
+  const expenses = rent + food + transport + other;
+  const left = income - expenses;
+
+  const totalHours = work + road + extra;
+  const realHour = totalHours > 0 ? income / totalHours : 0;
+  const wastedMoney = expenses > income ? expenses - income : 0;
+  const wastedHours = totalHours - work;
+
+  detectorResult.classList.remove('hidden');
+  detectorResult.innerHTML = `
+    <p>Финансовые утечки: <b>${wastedMoney.toLocaleString()} ₽</b></p>
+    <p>Потеря времени (дорога + переработки): <b>${wastedHours} ч</b></p>
+    <p>Реальная цена часа жизни: <b>${Math.round(realHour)} ₽</b></p>
+  `;
+});
 
