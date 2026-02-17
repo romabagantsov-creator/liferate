@@ -17,10 +17,9 @@
     <button class="cta" id="startBtn">Начать расчёт</button>
   </section>
 
-  <!-- CALCULATOR -->
+  <!-- Калькулятор расходов -->
   <section class="calculator hidden" id="calc">
     <h2>Куда уходит доход</h2>
-
     <div class="inputs">
       <input type="number" id="income" placeholder="Доход в месяц ₽">
       <input type="number" id="rent" placeholder="Жильё ₽">
@@ -28,31 +27,35 @@
       <input type="number" id="transport" placeholder="Транспорт ₽">
       <input type="number" id="other" placeholder="Прочее ₽">
     </div>
-
     <button class="cta small" id="calcBtn">Рассчитать</button>
-
     <div class="result hidden" id="result"></div>
   </section>
-  
-  <!-- LIFE RATE -->
-<section class="calculator hidden" id="lifeCalc">
-  <h2>Цена часа жизни</h2>
 
-  <div class="inputs">
-    <input type="number" id="workHours" placeholder="Часы работы в месяц">
-    <input type="number" id="roadHours" placeholder="Дорога (часы в месяц)">
-    <input type="number" id="extraHours" placeholder="Переработки (часы)">
-  </div>
+  <!-- Цена часа жизни -->
+  <section class="calculator hidden" id="lifeCalc">
+    <h2>Цена часа жизни</h2>
+    <div class="inputs">
+      <input type="number" id="workHours" placeholder="Часы работы в месяц">
+      <input type="number" id="roadHours" placeholder="Дорога (часы в месяц)">
+      <input type="number" id="extraHours" placeholder="Переработки (часы)">
+    </div>
+    <button class="cta small" id="lifeBtn">Рассчитать</button>
+    <div class="result hidden" id="lifeResult"></div>
+  </section>
 
-  <button class="cta small" id="lifeBtn">Рассчитать</button>
-
-  <div class="result hidden" id="lifeResult"></div>
-</section>
+  <!-- Финансовый детектор -->
+  <section class="calculator hidden" id="detectorCalc">
+    <h2>Финансовый детектор</h2>
+    <p>Показывает скрытые утечки денег и времени.</p>
+    <button class="cta small" id="detectorBtn">Проверить</button>
+    <div class="result hidden" id="detectorResult"></div>
+  </section>
 
 </main>
 
 <script src="js/app.js"></script>
 </body>
 </html>
+
 
 
