@@ -1,111 +1,85 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Liferate — каждый час имеет цену</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liferate — цена твоего времени</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<main class="container">
+<div class="app">
 
-  <!-- Заголовок -->
-  <section class="hero">
-    <h1>Каждый час <span>имеет цену</span></h1>
-    <p>Liferate показывает, сколько стоит твоё время и куда уходят деньги.</p>
+  <header>
+    <h1>Liferate</h1>
+    <p>Каждый час имеет цену</p>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="financeTab">Доходы</button>
+    <button class="tab-btn" data-tab="lifeTab">Час жизни</button>
+  </div>
+
+  <!-- ДОХОДЫ -->
+  <section class="tab-content" id="financeTab">
+    <h2>Доходы и расходы</h2>
+
+    <div class="card">
+      <label>Доход в месяц (₽)</label>
+      <input type="number" id="income">
+
+      <label>Жильё (₽)</label>
+      <input type="number" id="rent">
+
+      <label>Еда (₽)</label>
+      <input type="number" id="food">
+
+      <button class="cta" id="calcBtn">Рассчитать</button>
+
+      <div class="progress">
+        <div class="progress-fill" id="expenseBar"></div>
+      </div>
+
+      <div class="result hidden" id="result"></div>
+      <div class="advice hidden" id="financeAdvice"></div>
+    </div>
   </section>
 
-  <!-- Вкладки -->
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="calcTab">Доход и расходы</button>
-    <button class="tab-btn" data-tab="lifeTab">Цена часа жизни</button>
-    <button class="tab-btn" data-tab="detectorTab">Финансовый детектор</button>
-  </div>
-
-  <!-- Контент вкладок -->
-
-  <!-- Доход и расходы -->
-  <div class="tab-content" id="calcTab">
-    <h2>Доход и расходы</h2>
-    <div class="inputs">
-      <label>Выберите уровень дохода:
-        <select id="incomeLevel">
-          <option value="20000">20 000 ₽</option>
-          <option value="40000" selected>40 000 ₽</option>
-          <option value="60000">60 000 ₽</option>
-          <option value="80000">80 000 ₽</option>
-        </select>
-      </label>
-      <label>Жильё (примерно):
-        <select id="rentLevel">
-          <option value="10000">10 000 ₽</option>
-          <option value="15000" selected>15 000 ₽</option>
-          <option value="20000">20 000 ₽</option>
-        </select>
-      </label>
-      <label>Еда (примерно):
-        <select id="foodLevel">
-          <option value="5000">5 000 ₽</option>
-          <option value="10000" selected>10 000 ₽</option>
-          <option value="15000">15 000 ₽</option>
-        </select>
-      </label>
-    </div>
-    <button class="cta small" id="calcBtn">Рассчитать</button>
-    <div class="result hidden" id="result"></div>
-  </div>
-
-  <!-- Цена часа жизни -->
-  <div class="tab-content hidden" id="lifeTab">
+  <!-- ЧАС ЖИЗНИ -->
+  <section class="tab-content hidden" id="lifeTab">
     <h2>Цена часа жизни</h2>
-    <div class="inputs">
-      <label>Сколько дней в неделю вы работаете?
-        <select id="workDays">
-          <option value="4">4</option>
-          <option value="5" selected>5</option>
-          <option value="6">6</option>
-        </select>
-      </label>
-      <label>Сколько часов в день вы работаете?
-        <select id="workHoursPerDay">
-          <option value="6">6</option>
-          <option value="8" selected>8</option>
-          <option value="10">10</option>
-        </select>
-      </label>
-      <label>Сколько времени в день уходит на дорогу?
-        <select id="commute">
-          <option value="0.5">30 мин</option>
-          <option value="1" selected>1 час</option>
-          <option value="2">2 часа</option>
-        </select>
-      </label>
-      <label>Переработки (часов в неделю):
-        <select id="overtime">
-          <option value="0">0</option>
-          <option value="2" selected>2</option>
-          <option value="5">5</option>
-        </select>
-      </label>
+
+    <div class="card">
+      <label>Дней в неделю работаешь</label>
+      <input type="number" id="days">
+
+      <label>Часов в день</label>
+      <input type="number" id="hours">
+
+      <label>Часов дороги в день</label>
+      <input type="number" id="commute">
+
+      <label>Переработки в неделю (часы)</label>
+      <input type="number" id="overtime">
+
+      <button class="cta" id="lifeBtn">Рассчитать</button>
+
+      <div class="progress">
+        <div class="progress-fill" id="lifeBar"></div>
+      </div>
+
+      <div class="result hidden" id="lifeResult"></div>
+      <div class="advice hidden" id="lifeAdvice"></div>
     </div>
-    <button class="cta small" id="lifeBtn">Рассчитать</button>
-    <div class="result hidden" id="lifeResult"></div>
-  </div>
+  </section>
 
-  <!-- Финансовый детектор -->
-  <div class="tab-content hidden" id="detectorTab">
-    <h2>Финансовый детектор</h2>
-    <p>Показывает скрытые утечки денег и времени.</p>
-    <button class="cta small" id="detectorBtn">Проверить</button>
-    <div class="result hidden" id="detectorResult"></div>
-  </div>
-
-</main>
+</div>
 
 <script src="js/app.js"></script>
 </body>
 </html>
+
 
 
 
