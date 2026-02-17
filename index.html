@@ -8,41 +8,34 @@
 </head>
 <body>
 
-  <main class="container">
-    <section class="hero">
-      <h1>
-        Каждый час<br>
-        <span>имеет цену</span>
-      </h1>
+<main class="container">
 
-      <p>
-        Liferate показывает, сколько стоит твоё время
-        и куда на самом деле уходят деньги.
-      </p>
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Каждый час <span>имеет цену</span></h1>
+    <p>Liferate показывает, сколько стоит твоё время и куда уходят деньги.</p>
+    <button class="cta" id="startBtn">Начать расчёт</button>
+  </section>
 
-      <button class="cta">
-        Начать расчёт
-      </button>
-    </section>
+  <!-- CALCULATOR -->
+  <section class="calculator hidden" id="calc">
+    <h2>Куда уходит доход</h2>
 
-    <section class="features">
-      <div class="card">
-        <h3>Доход и расходы</h3>
-        <p>Узнай, сколько денег реально остаётся каждый месяц.</p>
-      </div>
+    <div class="inputs">
+      <input type="number" id="income" placeholder="Доход в месяц ₽">
+      <input type="number" id="rent" placeholder="Жильё ₽">
+      <input type="number" id="food" placeholder="Еда ₽">
+      <input type="number" id="transport" placeholder="Транспорт ₽">
+      <input type="number" id="other" placeholder="Прочее ₽">
+    </div>
 
-      <div class="card">
-        <h3>Цена часа жизни</h3>
-        <p>Посмотри, сколько стоит твой час с учётом дороги и переработок.</p>
-      </div>
+    <button class="cta small" id="calcBtn">Рассчитать</button>
 
-      <div class="card">
-        <h3>Финансовые утечки</h3>
-        <p>Найди траты, которые крадут деньги и твоё время.</p>
-      </div>
-    </section>
-  </main>
+    <div class="result hidden" id="result"></div>
+  </section>
 
-  <script src="js/app.js"></script>
+</main>
+
+<script src="js/app.js"></script>
 </body>
 </html>
