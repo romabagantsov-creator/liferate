@@ -1,96 +1,112 @@
-// ==================== Вкладки ====================
-const tabBtns = document.querySelectorAll('.tab-btn');
-const tabContents = document.querySelectorAll('.tab-content');
+// ================== ВСПОМОГАТЕЛЬНЫЕ ==================
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
-tabBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+function setProgress(barId, percent, color) {
+  const bar = document.getElementById(barId);
+  bar.style.width = percent + "%";
+  bar.style.background = color;
+}
 
-    const target = btn.dataset.tab;
-    tabContents.forEach(c => c.id === target ? c.classList.remove('hidden') : c.classList.add('hidden'));
+// ================== ВКЛАДКИ ==================
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(tab => tab.classList.add("hidden"));
+
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.remove("hidden");
   });
 });
 
-// ==================== Доход и расходы ====================
-const calcBtn = document.getElementById('calcBtn');
-const result = document.getElementById('result');
+// ================== ДОХОДЫ И РАСХОДЫ ==================
+document.getElementById("calcBtn").addEventListener("click", () => {
+  const income = Number(document.getElementById("income").value);
+  const rent = Number(document.getElementById("rent").value);
+  const food = Number(document.getElementById("food").value);
 
-calcBtn.addEventListener('click', () => {
-  const income = +document.getElementById('incomeLevel').value;
-  const rent = +document.getElementById('rentLevel').value;
-  const food = +document.getElementById('foodLevel').value;
+  if (!income || income <= 0) return;
 
   const expenses = rent + food;
-  const left = income - expenses;
-  const percent = Math.round((expenses / income) * 100);
-  const days = left > 0 ? Math.floor(left / (expenses / 30)) : 0;
+  const percent = clamp(Math.round((expenses / income) * 100), 0, 100);
 
-  result.classList.remove('hidden');
+  let level = "Комфортный уровень";
+  let color = "#22c55e";
+
+  if (percent > 70) {
+    level = "Высокая финансовая нагрузка";
+    color = "#ef4444";
+  } else if (percent > 45) {
+    level = "Средний уровень";
+    color = "#facc15";
+  }
+
+  setProgress("expenseBar", percent, color);
+
+  const remain = income - expenses;
+
+  const result = document.getElementById("result");
+  result.classList.remove("hidden");
   result.innerHTML = `
-    <p>Остаётся: <b>${left.toLocaleString()} ₽</b></p>
-    <p>Уходит: <b>${percent}% дохода</b></p>
-    <p>Денег хватит примерно на <b>${days} дней</b></p>
+    <p>Расходы: <b>${percent}%</b> дохода</p>
+    <p>Статус: <b style="color:${color}">${level}</b></p>
+    <p>Остаётся: <b>${remain.toLocaleString()} ₽</b></p>
   `;
+
+  const advice = document.getElementById("financeAdvice");
+  advice.classList.remove("hidden");
+  advice.innerText =
+    percent > 70
+      ? "Ты тратишь слишком много. Подумай о снижении расходов или увеличении дохода."
+      : percent > 45
+      ? "Баланс нормальный, но есть потенциал для улучшения."
+      : "Отличный баланс. Ты хорошо контролируешь финансы.";
 });
 
-// ==================== Цена часа жизни ====================
-const lifeBtn = document.getElementById('lifeBtn');
-const lifeResult = document.getElementById('lifeResult');
+// ================== ЦЕНА ЧАСА ЖИЗНИ ==================
+document.getElementById("lifeBtn").addEventListener("click", () => {
+  const income = Number(document.getElementById("income").value);
+  const days = Number(document.getElementById("days").value);
+  const hours = Number(document.getElementById("hours").value);
+  const commute = Number(document.getElementById("commute").value);
+  const overtime = Number(document.getElementById("overtime").value);
 
-lifeBtn.addEventListener('click', () => {
-  const income = +document.getElementById('incomeLevel').value;
-  const daysPerWeek = +document.getElementById('workDays').value;
-  const hoursPerDay = +document.getElementById('workHoursPerDay').value;
-  const commute = +document.getElementById('commute').value;
-  const overtime = +document.getElementById('overtime').value;
+  if (!income || !days || !hours) return;
 
-  const workHours = daysPerWeek * hoursPerDay * 4; // месяц
-  const roadHours = commute * daysPerWeek * 4; // дорога
-  const extraHours = overtime * 4; // переработки
+  const workHours = days * hours * 4;
+  const roadHours = commute * days * 4;
+  const extraHours = overtime * 4;
 
   const nominal = Math.round(income / workHours);
   const real = Math.round(income / (workHours + roadHours + extraHours));
 
-  lifeResult.classList.remove('hidden');
+  const efficiency = clamp(Math.round((real / nominal) * 100), 0, 100);
+
+  let color = "#22c55e";
+  if (efficiency < 70) color = "#ef4444";
+  else if (efficiency < 85) color = "#facc15";
+
+  setProgress("lifeBar", efficiency, color);
+
+  const lifeResult = document.getElementById("lifeResult");
+  lifeResult.classList.remove("hidden");
   lifeResult.innerHTML = `
     <p>Номинальная цена часа: <b>${nominal} ₽</b></p>
     <p>Реальная цена часа жизни: <b>${real} ₽</b></p>
+    <p>Эффективность времени: <b>${efficiency}%</b></p>
   `;
+
+  const lifeAdvice = document.getElementById("lifeAdvice");
+  lifeAdvice.classList.remove("hidden");
+  lifeAdvice.innerText =
+    efficiency < 70
+      ? "Ты продаёшь своё время слишком дёшево. Дорога и переработки съедают твою жизнь."
+      : efficiency < 85
+      ? "Время используется нормально, но есть потери."
+      : "Отлично. Ты почти полностью конвертируешь время в деньги.";
 });
 
-// ==================== Финансовый детектор ====================
-const detectorBtn = document.getElementById('detectorBtn');
-const detectorResult = document.getElementById('detectorResult');
 
-detectorBtn.addEventListener('click', () => {
-  const income = +document.getElementById('incomeLevel').value;
-  const rent = +document.getElementById('rentLevel').value;
-  const food = +document.getElementById('foodLevel').value;
-
-  const daysPerWeek = +document.getElementById('workDays').value;
-  const hoursPerDay = +document.getElementById('workHoursPerDay').value;
-  const commute = +document.getElementById('commute').value;
-  const overtime = +document.getElementById('overtime').value;
-
-  const expenses = rent + food;
-  const left = income - expenses;
-
-  const workHours = daysPerWeek * hoursPerDay * 4;
-  const roadHours = commute * daysPerWeek * 4;
-  const extraHours = overtime * 4;
-
-  const totalHours = workHours + roadHours + extraHours;
-  const realHour = totalHours > 0 ? income / totalHours : 0;
-  const wastedMoney = expenses > income ? expenses - income : 0;
-  const wastedHours = totalHours - workHours;
-
-  detectorResult.classList.remove('hidden');
-  detectorResult.innerHTML = `
-    <p>Финансовые утечки: <b>${wastedMoney.toLocaleString()} ₽</b></p>
-    <p>Потеря времени (дорога + переработки): <b>${wastedHours} ч</b></p>
-    <p>Реальная цена часа жизни: <b>${Math.round(realHour)} ₽</b></p>
-  `;
-});
 
 
