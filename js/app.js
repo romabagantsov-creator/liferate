@@ -66,46 +66,64 @@ document.getElementById("calcBtn").addEventListener("click", () => {
 
 // ================== ЦЕНА ЧАСА ЖИЗНИ ==================
 document.getElementById("lifeBtn").addEventListener("click", () => {
-  const income = Number(document.getElementById("income").value);
+  const income = Number(document.getElementById("lifeIncome").value);
   const days = Number(document.getElementById("days").value);
   const hours = Number(document.getElementById("hours").value);
   const commute = Number(document.getElementById("commute").value);
   const overtime = Number(document.getElementById("overtime").value);
 
-  if (!income || !days || !hours) return;
+  // Проверяем только то, что реально нужно
+  if (!days || !hours) {
+    alert("Введи дни и часы работы");
+    return;
+  }
 
   const workHours = days * hours * 4;
-  const roadHours = commute * days * 4;
-  const extraHours = overtime * 4;
+  const roadHours = commute ? commute * days * 4 : 0;
+  const extraHours = overtime ? overtime * 4 : 0;
 
-  const nominal = Math.round(income / workHours);
-  const real = Math.round(income / (workHours + roadHours + extraHours));
+  let nominalText = "";
+  let realText = "";
+  let efficiency = 0;
 
-  const efficiency = clamp(Math.round((real / nominal) * 100), 0, 100);
+  // Если доход введён — считаем цену часа
+  if (income && income > 0) {
+    const nominal = Math.round(income / workHours);
+    const real = Math.round(income / (workHours + roadHours + extraHours));
+    efficiency = Math.round((real / nominal) * 100);
 
-  let color = "#22c55e";
-  if (efficiency < 70) color = "#ef4444";
-  else if (efficiency < 85) color = "#facc15";
+    nominalText = `<p>Номинальная цена часа: <b>${nominal} ₽</b></p>`;
+    realText = `<p>Реальная цена часа жизни: <b>${real} ₽</b></p>`;
+  } else {
+    nominalText = `<p><i>Введи доход, чтобы узнать цену часа</i></p>`;
+  }
 
-  setProgress("lifeBar", efficiency, color);
+  const color =
+    efficiency < 70 ? "#ef4444" :
+    efficiency < 85 ? "#facc15" :
+    "#22c55e";
+
+  if (income) setProgress("lifeBar", efficiency, color);
 
   const lifeResult = document.getElementById("lifeResult");
   lifeResult.classList.remove("hidden");
   lifeResult.innerHTML = `
-    <p>Номинальная цена часа: <b>${nominal} ₽</b></p>
-    <p>Реальная цена часа жизни: <b>${real} ₽</b></p>
-    <p>Эффективность времени: <b>${efficiency}%</b></p>
+    ${nominalText}
+    ${realText}
+    <p>Всего рабочих часов в месяц: <b>${workHours}</b></p>
+    <p>Времени уходит на работу + дорогу: <b>${workHours + roadHours + extraHours}</b></p>
   `;
 
   const lifeAdvice = document.getElementById("lifeAdvice");
   lifeAdvice.classList.remove("hidden");
   lifeAdvice.innerText =
-    efficiency < 70
-      ? "Ты продаёшь своё время слишком дёшево. Дорога и переработки съедают твою жизнь."
-      : efficiency < 85
-      ? "Время используется нормально, но есть потери."
-      : "Отлично. Ты почти полностью конвертируешь время в деньги.";
+    income
+      ? efficiency < 70
+        ? "Ты тратишь слишком много времени вне жизни. Работа съедает доход."
+        : "Баланс времени и дохода нормальный."
+      : "Ты уже видишь, сколько времени уходит на работу. Доход — следующий шаг.";
 });
+
 
 
 
